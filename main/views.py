@@ -11,6 +11,11 @@ from main.models import MoodEntry
 from django.http import HttpResponse
 from django.core import serializers
 
+# use data from cookies
+import datetime
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
 # @login_required(login_url='/login') agar halaman main hanya dapat diakses oleh pengguna yang sudah login (terautentikasi)
 @login_required(login_url='/login')
 def show_main(request):
@@ -20,7 +25,9 @@ def show_main(request):
         'name': 'Pak Bepe',
         'class': 'PBP D',
         'npm': '2306123456',
-        'mood_entries': mood_entries
+        'mood_entries': mood_entries,
+
+        'last_login': request.COOKIES['last_login'],
     }
 
     return render(request, "main.html", context)
@@ -74,7 +81,12 @@ def login_user(request):
       if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('main:show_main')
+
+            # menambahkan fungsionalitas menambahkan cookie yang bernama last_login untuk melihat kapan terakhir kali pengguna melakukan login.
+            response = HttpResponseRedirect(reverse("main:show_main"))
+            response.set_cookie('last_login', str(datetime.datetime.now()))
+
+            return response
 
    else:
       form = AuthenticationForm(request)
@@ -86,4 +98,9 @@ def login_user(request):
 # return redirect('main:login') mengarahkan pengguna ke halaman login dalam aplikasi Django.
 def logout_user(request):
     logout(request)
-    return redirect('main:login')
+
+    # menghapus cookie last_login saat user melakukan logout.
+    response = HttpResponseRedirect(reverse('main:login'))
+    response.delete_cookie('last_login')
+
+    return response
