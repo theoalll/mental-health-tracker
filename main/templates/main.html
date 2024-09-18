@@ -39,4 +39,11 @@
 <a href="{% url 'main:create_mood_entry' %}">
 <button>Add New Mood Entry (click here)</button>
 </a>
+
+<!-- {% url 'main:logout' %} digunakan untuk mengarah ke URL secara dinamis berdasarkan app_name dan name yang sudah didefinisikan di urls.py -->
+<!-- {% url 'app_name:view_name' %} -->
+<a href="{% url 'main:logout' %}">
+    <button>Logout</button>
+  </a>
+  
 {% endblock content %}

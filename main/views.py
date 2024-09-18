@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from django.shortcuts import render, redirect
@@ -63,6 +63,8 @@ def register(request):
     return render(request, 'register.html', context)
 
 # Fungsi ini berfungsi untuk mengautentikasi pengguna yang ingin login
+# authenticate(request, username=username, password=password) digunakan untuk melakukan autentikasi pengguna berdasarkan username dan password yang diterima dari permintaan (request) yang dikirim oleh pengguna saat login. Jika kombinasi valid, maka objek user akan di-return. Jika tidak, maka akan mengembalikan None.
+# login(request, user) berfungsi untuk melakukan login terlebih dahulu. Jika pengguna valid, fungsi ini akan membuat session untuk pengguna yang berhasil login.
 def login_user(request):
    if request.method == 'POST':
       form = AuthenticationForm(data=request.POST)
@@ -76,3 +78,10 @@ def login_user(request):
       form = AuthenticationForm(request)
    context = {'form': form}
    return render(request, 'login.html', context)
+
+# Fungsi ini berfungsi untuk melakukan mekanisme logout
+# logout(request) digunakan untuk menghapus sesi pengguna yang saat ini masuk.
+# return redirect('main:login') mengarahkan pengguna ke halaman login dalam aplikasi Django.
+def logout_user(request):
+    logout(request)
+    return redirect('main:login')
