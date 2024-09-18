@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.decorators import login_required 
 
 from django.shortcuts import render, redirect
 
@@ -10,7 +11,8 @@ from main.models import MoodEntry
 from django.http import HttpResponse
 from django.core import serializers
 
-# Create your views here.
+# @login_required(login_url='/login') agar halaman main hanya dapat diakses oleh pengguna yang sudah login (terautentikasi)
+@login_required(login_url='/login')
 def show_main(request):
     mood_entries = MoodEntry.objects.all()
 
