@@ -19,10 +19,10 @@ from django.urls import reverse
 # @login_required(login_url='/login') agar halaman main hanya dapat diakses oleh pengguna yang sudah login (terautentikasi)
 @login_required(login_url='/login')
 def show_main(request):
-    mood_entries = MoodEntry.objects.all()
+    mood_entries = MoodEntry.objects.filter(user=request.user)
 
     context = {
-        'name': 'Pak Bepe',
+        'name': request.user.username,
         'class': 'PBP D',
         'npm': '2306123456',
         'mood_entries': mood_entries,
@@ -36,7 +36,10 @@ def create_mood_entry(request):
     form = MoodEntryForm(request.POST or None)
 
     if form.is_valid() and request.method == "POST":
-        form.save()
+        # menghubungkan satu mood entry dengan satu user melalui sebuah relationship
+        mood_entry = form.save(commit=False) # mencegah Django agar tidak langsung menyimpan objek yang telah dibuat dari form langsung ke database
+        mood_entry.user = request.user
+        mood_entry.save()
         return redirect('main:show_main')
 
     context = {'form': form}
