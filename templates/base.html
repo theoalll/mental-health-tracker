@@ -5,6 +5,7 @@
     {% block meta %}
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/global.css' %}"/>
     {% endblock meta %}
 
     <!-- CSS -->
@@ -21,6 +22,8 @@
 
   
   <body>
+    <div class="grid gap-3">
     {% block content %} {% endblock content %}
+    </div>
   </body>
 </html>

@@ -1,68 +1,79 @@
 {% extends 'base.html' %}
 {% block content %}
 {% include 'navbar.html' %}
+{% load static %}
+<div class="container-sm px-4 py-5">
+    
+    <h1>Mental Health Tracker</h1>
 
-<h1>Mental Health Tracker</h1>
+    <figure>
+        <blockquote class="blockquote">
+          <p>The true definition of mental illness is when the majority
+            of your time is spent in the past or future, but rarely living
+            in the realism of NOW.</p>
+        </blockquote>
+        <figcaption class="blockquote-footer">
+            Shannon L Alder, n.d.
+        </figcaption>
+    </figure>
+    
+    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center px-4 py-5">
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm py-3">
+                <h5>NPM: </h5>
+                <p>{{ npm }}</p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm py-3">
+                <h5>Name: </h5>
+                <p>{{ name }}</p>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card mb-4 rounded-3 shadow-sm py-3">
+                <h5>Class: </h5>
+                <p>{{ class }}</p>
+            </div>
+        </div>
+    </div>
 
-<h5>NPM: </h5>
-<p>{{ npm }}<p>
-<h5>Name: </h5>
-<p>{{ name }}<p>
-<h5>Class: </h5>
-<p>{{ class }}<p>
+    
+    <div class="col-lg-6 col-xxl-5 mx-auto">
+        <h5>Sesi terakhir login: {{ last_login }}</h5>
+        <div class="d-grid gap-2">
+            <a class="btn btn-primary" role="button" href="{% url 'main:create_mood_entry' %}">Add New Mood Entry</a>
+          <a class="btn btn-outline-secondary" role="button" href="{% url 'main:logout' %}">Logout</a>
+        </div>
+    </div>
+    
+    
+    {% if not mood_entries %}
+    
+    <div class="vstack gap-3 text-center px-4 py-3">
+        <div class="p-2"><h5>Belum ada data mood pada mental health tracker :(</h5></div>
+        <div class="p-2"><img src="{% static 'image/mood_not_found.png' %}" alt="Sad face" style="width: 150px; height: 150px;" class="w-32 h-32 mb-4"/></div>
+      </div>
+    {% else %}
+    
+    
+    {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
+    {% endcomment %} 
+    <div class="container px-4 py-5" id="featured-3" ></div>
+        <h2 class="pb-2 border-bottom">Mood Entries</h2>
+            <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+                {% for mood_entry in mood_entries %}
+                    {% include 'card_mood.html' with mood_entry=mood_entry %}
+                {% endfor %}
+            </div>
+    </div>
+        
+    {% endif %}
+    
+    <br />
+    
+    
+</div>
 
-{% if not mood_entries %}
-<p>Belum ada data mood pada mental health tracker.</p>
-{% else %}
-<table>
-<tr>
-    <th>Mood Name</th>
-    <th>Time</th>
-    <th>Feeling</th>
-    <th>Mood Intensity</th>
-</tr>
-
-{% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
-{% endcomment %} 
-{% for mood_entry in mood_entries %}
-<tr>
-    <td>{{mood_entry.mood}}</td>
-    <td>{{mood_entry.time}}</td>
-    <td>{{mood_entry.feelings}}</td>
-    <td>{{mood_entry.mood_intensity}}</td>
-    <td>
-        <!-- membangun URL dengan menambahkan primary key (pk) dari objek mood_entry sebagai parameter -->
-        <a href="{% url 'main:edit_mood' mood_entry.pk %}">
-            <button>
-                Edit
-            </button>
-        </a>
-    </td>
-    <td>
-        <!-- membangun URL dengan menambahkan primary key (pk) dari objek mood_entry sebagai parameter -->
-        <a href="{% url 'main:delete_mood' mood_entry.pk %}">
-            <button>
-                Delete
-            </button>
-        </a>
-    </td>
-</tr>
-{% endfor %}
-</table>
-{% endif %}
-
-<br />
-
-<a href="{% url 'main:create_mood_entry' %}">
-<button>Add New Mood Entry (click here)</button>
-</a>
-
-<!-- {% url 'main:logout' %} digunakan untuk mengarah ke URL secara dinamis berdasarkan app_name dan name yang sudah didefinisikan di urls.py -->
-<!-- url 'app_name:view_name' -->
-<a href="{% url 'main:logout' %}">
-    <button>Logout</button>
-</a>
-
-<h5>Sesi terakhir login: {{ last_login }}</h5>
   
 {% endblock content %}

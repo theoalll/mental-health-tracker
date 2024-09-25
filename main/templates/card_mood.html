@@ -1,0 +1,43 @@
+<div class="feature col border rounded px-4 py-4">
+    <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+      <svg class="bi" width="1em" height="1em"><use xlink:href="#collection"></use></svg>
+    </div>
+    <h3 class="fs-2 text-body-emphasis">{{mood_entry.mood}}</h3>
+    <p>Time: {{mood_entry.time}}</p>
+    <p>{{mood_entry.feelings}}</p>
+
+    <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="{{mood_entry.mood_intensity}}" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:{{ mood_entry.mood_intensity }}0%" ></div>
+    </div>
+
+    <div class="hstack gap-3 py-3">
+        <a class="icon-link" href="{% url 'main:edit_mood' mood_entry.pk%}">
+            Edit mood
+        </a>
+        <div class="p-2">
+            <button type="button" class="btn btn-danger rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#deleteConfirmation">
+                Delete
+            </button>
+        </div>
+        
+    </div>
+</div>
+
+<div class="modal fade" id="deleteConfirmation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure want to delete this mood?</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Once deleted, the mood can't be recovered, and you will lost your precious memory together :(
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <a class="btn btn-danger rounded-pill px-3" role="button" href="{% url 'main:delete_mood' mood_entry.pk%}" type="a">Delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
