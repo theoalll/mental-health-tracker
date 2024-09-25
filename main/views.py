@@ -123,3 +123,12 @@ def edit_mood(request, id):
 
     context = {'form': form}
     return render(request, "edit_mood.html", context)
+
+# Menambahkan Fitur Hapus Mood pada Aplikasi
+def delete_mood(request, id):
+    # Get mood berdasarkan id
+    mood = MoodEntry.objects.get(pk = id)
+    # Hapus mood
+    mood.delete()
+    # Kembali ke halaman awal
+    return HttpResponseRedirect(reverse('main:show_main'))

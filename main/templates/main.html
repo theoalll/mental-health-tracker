@@ -37,6 +37,14 @@
             </button>
         </a>
     </td>
+    <td>
+        <!-- membangun URL dengan menambahkan primary key (pk) dari objek mood_entry sebagai parameter -->
+        <a href="{% url 'main:delete_mood' mood_entry.pk %}">
+            <button>
+                Delete
+            </button>
+        </a>
+    </td>
 </tr>
 {% endfor %}
 </table>
