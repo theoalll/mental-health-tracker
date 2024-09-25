@@ -29,6 +29,14 @@
     <td>{{mood_entry.time}}</td>
     <td>{{mood_entry.feelings}}</td>
     <td>{{mood_entry.mood_intensity}}</td>
+    <td>
+        <!-- membangun URL dengan menambahkan primary key (pk) dari objek mood_entry sebagai parameter -->
+        <a href="{% url 'main:edit_mood' mood_entry.pk %}">
+            <button>
+                Edit
+            </button>
+        </a>
+    </td>
 </tr>
 {% endfor %}
 </table>

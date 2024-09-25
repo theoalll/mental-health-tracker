@@ -3,12 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required 
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 
 from main.forms import MoodEntryForm
 from main.models import MoodEntry
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 
 # use data from cookies
@@ -107,3 +107,19 @@ def logout_user(request):
     response.delete_cookie('last_login')
 
     return response
+
+# Menambahkan Fitur Edit Mood pada Aplikasi
+def edit_mood(request, id):
+    # Get mood entry berdasarkan id
+    mood = MoodEntry.objects.get(pk = id)
+
+    # Set mood entry sebagai instance dari form
+    form = MoodEntryForm(request.POST or None, instance=mood)
+
+    if form.is_valid() and request.method == "POST":
+        # Simpan form dan kembali ke halaman awal
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "edit_mood.html", context)
