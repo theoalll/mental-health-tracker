@@ -16,6 +16,10 @@ import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+# Menambahkan Mood dengan AJAX
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+
 # @login_required(login_url='/login') agar halaman main hanya dapat diakses oleh pengguna yang sudah login (terautentikasi)
 @login_required(login_url='/login')
 def show_main(request):
@@ -44,6 +48,24 @@ def create_mood_entry(request):
 
     context = {'form': form}
     return render(request, "create_mood_entry.html", context)
+
+@csrf_exempt # Django tidak perlu mengecek keberadaan csrf_token pada POST request yang dikirimkan
+@require_POST # hanya bisa diakses ketika pengguna mengirimkan POST request ke fungsi tersebut. Jika pengguna mengirimkan request dengan method lain, maka dari Django akan dikembalikan eror 405 Method Not Allowed.
+def add_mood_entry_ajax(request):
+    mood = request.POST.get("mood")
+    feelings = request.POST.get("feelings")
+    mood_intensity = request.POST.get("mood_intensity")
+    user = request.user
+
+    new_mood = MoodEntry(
+        mood=mood, 
+        feelings=feelings,
+        mood_intensity=mood_intensity,
+        user=user
+    )
+    new_mood.save()
+
+    return HttpResponse(b"CREATED", status=201)
 
 def show_xml(request):
     data = MoodEntry.objects.all()
