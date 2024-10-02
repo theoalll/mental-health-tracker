@@ -92,7 +92,7 @@ def login_user(request):
             return response
 
    else:
-      form = AuthenticationForm(request)
+      messages.error(request, "Invalid username or password. Please try again.")
    context = {'form': form}
    return render(request, 'login.html', context)
 
