@@ -20,6 +20,9 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+# clean input
+from django.utils.html import strip_tags
+
 # @login_required(login_url='/login') agar halaman main hanya dapat diakses oleh pengguna yang sudah login (terautentikasi)
 @login_required(login_url='/login')
 def show_main(request):
@@ -52,8 +55,8 @@ def create_mood_entry(request):
 @csrf_exempt # Django tidak perlu mengecek keberadaan csrf_token pada POST request yang dikirimkan
 @require_POST # hanya bisa diakses ketika pengguna mengirimkan POST request ke fungsi tersebut. Jika pengguna mengirimkan request dengan method lain, maka dari Django akan dikembalikan eror 405 Method Not Allowed.
 def add_mood_entry_ajax(request):
-    mood = request.POST.get("mood")
-    feelings = request.POST.get("feelings")
+    mood = strip_tags(request.POST.get("mood")) # strip HTML tags!
+    feelings = strip_tags(request.POST.get("feelings")) # strip HTML tags!
     mood_intensity = request.POST.get("mood_intensity")
     user = request.user
 
@@ -101,24 +104,25 @@ def register(request):
 # Fungsi ini berfungsi untuk mengautentikasi pengguna yang ingin login
 # authenticate(request, username=username, password=password) digunakan untuk melakukan autentikasi pengguna berdasarkan username dan password yang diterima dari permintaan (request) yang dikirim oleh pengguna saat login. Jika kombinasi valid, maka objek user akan di-return. Jika tidak, maka akan mengembalikan None.
 # login(request, user) berfungsi untuk melakukan login terlebih dahulu. Jika pengguna valid, fungsi ini akan membuat session untuk pengguna yang berhasil login.
+
 def login_user(request):
-   if request.method == 'POST':
-      form = AuthenticationForm(data=request.POST)
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
 
-      if form.is_valid():
-            user = form.get_user()
-            login(request, user)
+        if form.is_valid():
+                user = form.get_user()
+                login(request, user)
 
-            # menambahkan fungsionalitas menambahkan cookie yang bernama last_login untuk melihat kapan terakhir kali pengguna melakukan login.
-            response = HttpResponseRedirect(reverse("main:show_main"))
-            response.set_cookie('last_login', str(datetime.datetime.now()))
+                # menambahkan fungsionalitas menambahkan cookie yang bernama last_login untuk melihat kapan terakhir kali pengguna melakukan login.
+                response = HttpResponseRedirect(reverse("main:show_main"))
+                response.set_cookie('last_login', str(datetime.datetime.now()))
 
-            return response
+                return response
 
-   else:
-      messages.error(request, "Invalid username or password. Please try again.")
-   context = {'form': form}
-   return render(request, 'login.html', context)
+    else:
+        form = AuthenticationForm(request)
+    context = {'form': form}
+    return render(request, 'login.html', context)
 
 # Fungsi ini berfungsi untuk melakukan mekanisme logout
 # logout(request) digunakan untuk menghapus sesi pengguna yang saat ini masuk.
