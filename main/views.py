@@ -23,13 +23,13 @@ from django.views.decorators.http import require_POST
 # @login_required(login_url='/login') agar halaman main hanya dapat diakses oleh pengguna yang sudah login (terautentikasi)
 @login_required(login_url='/login')
 def show_main(request):
-    mood_entries = MoodEntry.objects.filter(user=request.user)
+    # mood_entries = MoodEntry.objects.filter(user=request.user)
 
     context = {
         'name': request.user.username,
         'class': 'PBP D',
         'npm': '2306123456',
-        'mood_entries': mood_entries,
+        # 'mood_entries': mood_entries,
 
         'last_login': request.COOKIES['last_login'],
     }
@@ -68,11 +68,13 @@ def add_mood_entry_ajax(request):
     return HttpResponse(b"CREATED", status=201)
 
 def show_xml(request):
-    data = MoodEntry.objects.all()
+    # data = MoodEntry.objects.all()
+    data = MoodEntry.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json(request):
-    data = MoodEntry.objects.all()
+    # data = MoodEntry.objects.all()
+    data = MoodEntry.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_xml_by_id(request, id):
